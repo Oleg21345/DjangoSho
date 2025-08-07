@@ -1,0 +1,9 @@
+footer a:hover {
+  text-decoration: underline;
+  color: #ffc107 !important;
+}
+
+
+.navbar-nav .nav-link:hover {
+  color: #ffc107 !important; /* Яскраво-жовтий при наведенні */
+}

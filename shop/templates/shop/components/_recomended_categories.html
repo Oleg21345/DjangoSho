@@ -1,0 +1,26 @@
+<h5>Батьківські категорії</h5>
+<ul>
+    {% for category in parent_categories %}
+        <li>
+            <a href="{{ category.get_absolute_url }}" class="{% if category == selected_category %}fw-bold text-primary{% else %}text-dark{% endif %}">
+                {{ category.title }}
+            </a>
+        </li>
+    {% empty %}
+        <li>Немає батьківських категорій</li>
+    {% endfor %}
+</ul>
+
+<h5>Дочірні категорії</h5>
+<ul>
+    {% for category in child_categories %}
+        <li>
+            <a href="{{ category.get_absolute_url }}" class="{% if category == selected_category %}fw-bold text-primary{% else %}text-dark{% endif %}">
+                {{ category.title }}
+            </a>
+        </li>
+    {% empty %}
+        <li>Немає дочірніх категорій</li>
+    {% endfor %}
+</ul>
+

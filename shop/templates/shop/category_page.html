@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Shop
+{% endblock %}
+
+{% block main %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-3">
+            <h5 class="mb-4">CATEGORIES</h5>
+
+            <div class="mb-4">
+                <h6 class="fw-bold bg-dark text-white p-2">FASHION & ACC</h6>
+                <ul class="list-unstyled ps-2">
+                {% include "shop/components/_recomended_categories.html" %}
+                </ul>
+            </div>
+
+        </div>
+
+        <div class="col-lg-9">
+            <div class="row row-cols-2 row-cols-sm-3 row-cols-md-4 g-3 justify-content-center">
+                {% for product in products %}
+                <div class="col d-flex justify-content-center">
+                    <div class="card shadow-sm border-0" style="width: 180px;">
+                        <div class="position-relative d-flex justify-content-center align-items-center"
+                             style="height: 160px; overflow: hidden;">
+                            <a href="{{ product.get_absolute_url }}" class="d-block w-100 h-100">
+                                <img src="{{ product.get_first_photo }}"
+                                     alt="{{ product.title }}"
+                                     class="img-fluid"
+                                     style="max-height: 160px; object-fit: contain; display: block; margin: 0 auto;"
+                                     onerror="this.src='https://via.placeholder.com/200x160?text=No+Image'">
+                            </a>
+                            <span class="badge bg-danger position-absolute top-0 start-0 m-2">Sale</span>
+                        </div>
+                        <div class="card-body text-center p-2">
+                            <h6 class="card-title mb-1 text-truncate" title="{{ product.title }}">{{ product.title }}</h6>
+                            <small class="text-muted">${{ product.price }}</small>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-center">No products available.</p>
+                {% endfor %}
+            </div>
+
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

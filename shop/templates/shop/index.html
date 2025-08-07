@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load sort_products %}
+
+
+{% block title %}
+
+{{ title }}
+
+{% endblock %}
+
+{% block main %}
+<div class="container my-5">
+ <div class="container my-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">Наші товари</h2>
+
+            <div class="mb-3 d-flex flex-wrap gap-2">
+                <a href="?sort=all" class="btn btn-outline-primary">Все</a>
+                <a href="?sort=price" class="btn btn-outline-primary">За ціною</a>
+                <a href="?sort=watched" class="btn btn-outline-primary">За переглядами</a>
+                <a href="?sort=create_at" class="btn btn-outline-primary">Свіжі</a>
+                <a href="?sort=title" class="btn btn-outline-primary">Від А до Я</a>
+                <a href="?sort=title_minus" class="btn btn-outline-primary">Від Я до А</a>
+
+            </div>
+
+            <div class="row g-4">
+                {% get_sorted_products as products %}
+                {% include "shop/components/_products.html" with prod=products %}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <h2 class="mb-4">Категорії</h2>
+            <div class="row g-4">
+                {% for cat in categories %}
+                <div class="col-md-4 col-lg-3">
+                    <a href="#" class="text-decoration-none text-dark">
+                        <div class="card h-100 shadow-sm">
+                            <a href="{{ cat.get_absolute_url }}">
+                                <img src="{{ cat.get_parent_cat_photo }}"
+                                     alt="{{ cat.name }}"
+                                     class="card-img-top"
+                                     style="height: 200px; width: 100%; object-fit: contain; background-color: #f8f9fa;"
+                                     onerror="this.src='https://via.placeholder.com/300x200?text=No+Img'">
+                            </a>
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ cat.title }}</h5>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Shop
+{% endblock %}
+
+{% block main %}
+<main class="py-5 bg-light">
+
+    <div class="container">
+        <div class="row justify-content-center g-5">
+            <div class="col-md-5">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">Увійти в акаунт</h2>
+                        <form action="{% url 'login' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                {{ login_form.username.label_tag }}
+                                {{ login_form.username }}
+                                {% if login_form.username.errors %}
+                                    <div class="text-danger small">{{ login_form.username.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ login_form.password.label_tag }}
+                                {{ login_form.password }}
+                                {% if login_form.password.errors %}
+                                    <div class="text-danger small">{{ login_form.password.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <button class="btn btn-primary w-100" type="submit">Увійти</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-5">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">Створити акаунт</h2>
+                        <form action="{% url 'register' %}" method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                {{ register_form.username.label_tag }}
+                                {{ register_form.username }}
+                                {% if register_form.username.errors %}
+                                    <div class="text-danger small">{{ register_form.username.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ register_form.email.label_tag }}
+                                {{ register_form.email }}
+                                {% if register_form.email.errors %}
+                                    <div class="text-danger small">{{ register_form.email.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ register_form.password1.label_tag }}
+                                {{ register_form.password1 }}
+                                {% if register_form.password1.errors %}
+                                    <div class="text-danger small">{{ register_form.password1.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="mb-3">
+                                {{ register_form.password2.label_tag }}
+                                {{ register_form.password2 }}
+                                {% if register_form.password2.errors %}
+                                    <div class="text-danger small">{{ register_form.password2.errors }}</div>
+                                {% endif %}
+                            </div>
+                            <button class="btn btn-success w-100" type="submit">Зареєструватися</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
