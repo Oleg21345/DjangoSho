@@ -1,6 +1,13 @@
+import datetime
+
 from django.views.generic import ListView, DetailView
-from shop.models import Category, Product
+from shop.models import Category, Product, Reviews, Favourite
 from django.db.models import Q, F
+from shop.forms import ReviewForm
+from django.contrib import messages
+from django.shortcuts import redirect
+from django.db.models import Avg
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class Home(ListView):
@@ -14,6 +21,11 @@ class Home(ListView):
         """Додаткові параметри у шаблон"""
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.filter(parent=None)
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_authenticated:
+            context['favourites_count'] = Favourite.objects.filter(user=self.request.user).count()
+        else:
+            context['favourites_count'] = 0
         return context
 
 
@@ -80,11 +92,73 @@ class ProductDetail(DetailView):
         context["products"] = products
 
         Product.objects.filter(slug=slug).update(watched=F("watched") + 1)
+        product = Product.objects.get(slug=slug)
+        context["avg_rating"] = product.reviews.aggregate(avg=Avg('rating'))['avg'] or 0
 
+        if self.request.user.is_authenticated:
+            context["review_form"] = ReviewForm()
+            context["reviews"] = Reviews.objects.filter(product=product).order_by("-create_at")
         return context
 
 
     def get_queryset(self):
         return Product.objects.all()
+
+class FavouriteDetail(LoginRequiredMixin ,ListView):
+    model = Favourite
+    context_object_name = "favourite"
+    extra_context = {"title": "Сторінка обраного"}
+    template_name = "shop/favourite.html"
+    login_url = "login_register"
+
+    def get_queryset(self):
+        return Favourite.objects.filter(user=self.request.user).select_related('product')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        favourites = self.get_queryset()
+        context['products'] = [fav.product for fav in favourites]
+        return context
+
+
+def add_review(request, product_slug):
+    """Додавання коментаря"""
+    print("add_review called", request.POST)
+    form = ReviewForm(data=request.POST)
+    if form.is_valid():
+        review = form.save(commit=False)
+        review.author = request.user
+        product = Product.objects.get(slug=product_slug)
+        review.product = product
+        review.create_at = datetime.datetime.utcnow()
+        review.save()
+        message = "Ваш відгук був успішно залишений"
+        messages.success(request, message, extra_tags='', fail_silently=False)
+        return redirect("product_detail", slug=product_slug)
+    else:
+        form = ReviewForm()
+
+    return redirect("product_detail", slug=product_slug)
+
+
+def favourite_product(request, product_slug):
+    if request.user.is_authenticated:
+        user = request.user
+        product = Product.objects.get(slug=product_slug)
+        favourite_products = Favourite.objects.filter(user=user)
+        if product in [i.product for i in favourite_products]:
+            fav_product = Favourite.objects.get(user=user, product=product)
+            fav_product.delete()
+        else:
+            Favourite.objects.create(user=user, product=product)
+        next_page = request.META.get("HTTP_REFERER", "category_detail")
+        return redirect(next_page)
+    else:
+        return redirect("login_register")
+
+
+
+
+
 
 

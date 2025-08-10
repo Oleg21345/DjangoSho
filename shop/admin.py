@@ -1,4 +1,4 @@
-from shop.models import Product, Category, Galery
+from shop.models import Product, Category, Galery, Reviews
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
@@ -43,6 +43,12 @@ class ProductAdmin(admin.ModelAdmin):
 
     get_photo.short_description = "Фото"
 
+
+@admin.register(Reviews)
+class Review(admin.ModelAdmin):
+    """Відгуки"""
+    list_display = ("pk", "author", "create_at")
+    readonly_fields = ("author", "text", "create_at",)
 
 
 

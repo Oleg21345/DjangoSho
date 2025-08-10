@@ -10,28 +10,29 @@
 
 {% block main %}
 <div class="container my-5">
- <div class="container my-5">
-    <div class="row">
-        <div class="col-12">
-            <h2 class="mb-4">Наші товари</h2>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">Наші товари</h2>
 
-            <div class="mb-3 d-flex flex-wrap gap-2">
-                <a href="?sort=all" class="btn btn-outline-primary">Все</a>
-                <a href="?sort=price" class="btn btn-outline-primary">За ціною</a>
-                <a href="?sort=watched" class="btn btn-outline-primary">За переглядами</a>
-                <a href="?sort=create_at" class="btn btn-outline-primary">Свіжі</a>
-                <a href="?sort=title" class="btn btn-outline-primary">Від А до Я</a>
-                <a href="?sort=title_minus" class="btn btn-outline-primary">Від Я до А</a>
+                <div class="mb-3 d-flex flex-wrap gap-2">
+                    <a href="?sort=all" class="btn btn-outline-primary">Все</a>
+                    <a href="?sort=price" class="btn btn-outline-primary">За ціною</a>
+                    <a href="?sort=watched" class="btn btn-outline-primary">За переглядами</a>
+                    <a href="?sort=create_at" class="btn btn-outline-primary">Свіжі</a>
+                    <a href="?sort=product_rating" class="btn btn-outline-primary">За рейтингом</a>
+                    <a href="?sort=title" class="btn btn-outline-primary">Від А до Я</a>
+                    <a href="?sort=title_minus" class="btn btn-outline-primary">Від Я до А</a>
 
-            </div>
+                </div>
 
-            <div class="row g-4">
-                {% get_sorted_products as products %}
-                {% include "shop/components/_products.html" with prod=products %}
+                <div class="row g-4">
+                    {% get_sorted_products as products %}
+                    {% include "shop/components/_products.html" with prod=products %}
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
     <div class="row mt-5">

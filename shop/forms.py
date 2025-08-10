@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, User
-
+from shop.models import Reviews
 
 
 class LoginForm(AuthenticationForm):
@@ -66,3 +66,19 @@ class RegisterForm(UserCreationForm):
             "placeholder": "Повторити пароль"
         })
     )
+
+
+class ReviewForm(forms.ModelForm):
+
+    class Meta:
+        model = Reviews
+        fields = ("text", "rating")
+
+        widgets = {
+            "text": forms.Textarea(attrs={
+                "class": "form-control",
+                "placeholder": "Додати відгук",
+                "rows": 3
+            }),
+            'rating': forms.HiddenInput()
+        }

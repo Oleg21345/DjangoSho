@@ -2,6 +2,7 @@ import uuid
 from django.db import models
 from django.db.models import CASCADE
 from django.urls import reverse
+from django.contrib.auth.models import User
 
 def generate_random_slug():
     return uuid.uuid4().hex[:12]
@@ -78,4 +79,29 @@ class Galery(models.Model):
         verbose_name_plural = "Галерея картинок"
 
 
+class Reviews(models.Model):
+    text = models.TextField(verbose_name="Текст відгуку")
+    author = models.ForeignKey(User, on_delete=CASCADE, verbose_name="Автор")
+    product = models.ForeignKey(Product, on_delete=CASCADE, verbose_name="Продукт",  related_name="reviews")
+    rating = models.PositiveSmallIntegerField(default=0)
+    create_at = models.DateTimeField(auto_created=True, verbose_name="Час створення")
 
+    def __str__(self):
+        return self.author.username
+
+    class Meta:
+        verbose_name = "Відгук"
+        verbose_name_plural = "Відгуки"
+
+
+class Favourite(models.Model):
+    """Обране користувачем"""
+    user = models.ForeignKey(User, on_delete=CASCADE, verbose_name="Користувач")
+    product = models.ForeignKey(Product, on_delete=CASCADE, verbose_name="Продукт")
+
+    def __str__(self):
+        return self.product.title
+
+    class Meta:
+        verbose_name = "Обране"
+        verbose_name_plural = "Обрані"
