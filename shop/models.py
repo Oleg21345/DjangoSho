@@ -105,3 +105,93 @@ class Favourite(models.Model):
     class Meta:
         verbose_name = "Обране"
         verbose_name_plural = "Обрані"
+
+class Gmail(models.Model):
+    gmail = models.EmailField(unique=True, verbose_name="Пошта")
+    user = models.ForeignKey(User, on_delete=CASCADE, blank=True, null=True, verbose_name="Користувач")
+
+    class Meta:
+        verbose_name = "Пошта"
+        verbose_name_plural = "Пошти"
+
+
+class Customer(models.Model):
+    user = models.OneToOneField(User, models.SET_NULL, blank=True, null=True, verbose_name="Користувач")
+    first_name = models.CharField(max_length=255, verbose_name="Ім'я")
+    last_name = models.CharField(max_length=255, verbose_name="Фамілія")
+    gmail = models.EmailField(unique=True, verbose_name="Пошта")
+    phone_number = models.CharField(max_length=255, verbose_name="Номер телефону")
+
+    def __str__(self):
+        return self.first_name
+
+    class Meta:
+        verbose_name = "Замовник"
+        verbose_name_plural = "Замовники"
+
+
+class Order(models.Model):
+    """Корзина"""
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True,
+                                 verbose_name="Покупець")
+    create_at = models.DateTimeField(auto_created=True, verbose_name="Час створення")
+    is_completed = models.BooleanField(default=False, verbose_name="Закінчене замовлення")
+    shiping = models.BooleanField(default=True, verbose_name="Доставка")
+
+    def __str__(self):
+        return str(self.pk)
+
+    class Meta:
+        verbose_name = "Замовлення"
+        verbose_name_plural = "Замовлення"
+
+    @property
+    def get_cart_total_price(self):
+        """Тут йде рахунок суми товарів в корзині"""
+        order_products = self.ordered.all()
+        total_price = sum([product.get_total_price for product in order_products])
+        return total_price
+
+    @property
+    def get_cart_total_quantity(self):
+        order_products = self.ordered.all()
+        total_quantity = sum([product.quantity for product in order_products])
+        return total_quantity
+
+
+class OrderProduct(models.Model):
+    """Прив'язка продукту до корзини"""
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name="Продукт")
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, related_name="ordered")
+    quantity = models.IntegerField(default=0, null=True, blank=True) # Кількість товару
+    added_at = models.DateTimeField(auto_created=True)
+
+    class Meta:
+        verbose_name = "Замовлення в корзині"
+        verbose_name_plural = "Замовленн в корзині"
+
+    @property
+    def get_total_price(self):
+        """ Тут йде рахунок кількості товару"""
+        total_price = self.product.price * self.quantity
+        return total_price
+
+
+class ShippingAddress(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
+    city = models.CharField(max_length=355)
+    state = models.CharField(max_length=355)
+    street = models.CharField(max_length=355)
+    create_at = models.DateTimeField(auto_created=True, verbose_name="Час створення")
+
+    def __str__(self):
+        return self.street
+
+    class Meta:
+        verbose_name = "Адреса"
+        verbose_name_plural = "Адреса"
+
+
+
+

@@ -1,6 +1,7 @@
-from shop.models import Product, Category, Galery, Reviews
+from shop.models import Product, Category, Galery, Reviews, Gmail, Customer, OrderProduct, ShippingAddress, Order, Favourite
 from django.contrib import admin
 from django.utils.safestring import mark_safe
+
 
 class GaleryInline(admin.TabularInline):
     fk = "product"
@@ -20,7 +21,6 @@ class CategoryAdmin(admin.ModelAdmin):
         else:
             return "0"
     get_product_count.short_description = "Кількість товару"
-
 
 
 @admin.register(Product)
@@ -51,9 +51,44 @@ class Review(admin.ModelAdmin):
     readonly_fields = ("author", "text", "create_at",)
 
 
+@admin.register(Gmail)
+class Gmail(admin.ModelAdmin):
+    """Пошти"""
+    list_display = ("pk", "gmail", "user")
+    readonly_fields = ("pk", "gmail", "user")
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ("customer", "create_at", "is_completed", "shiping")
+    readonly_fields = ("customer", "is_completed", "shiping")
+    list_filter = ("customer", "create_at", "is_completed")
+
+
+@admin.register(Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = ("user", "first_name", "last_name", "gmail", "phone_number")
+    readonly_fields = ("user", "first_name", "last_name", "gmail", "phone_number")
+    list_filter = ("user",)
+
+
+@admin.register(OrderProduct)
+class OrderProductAdmin(admin.ModelAdmin):
+    list_display = ("product", "order", "quantity", "added_at")
+    readonly_fields = ("product", "order", "quantity", "added_at")
+    list_filter = ("product", "quantity", "added_at")
+
+
+@admin.register(ShippingAddress)
+class ShippingAddressAdmin(admin.ModelAdmin):
+    list_display = ("customer", "city")
+    readonly_fields =  ("customer", "order", "city", "state", "street", "create_at")
+    list_filter = ("customer", "city", "create_at")
+
+
 
 admin.site.register(Galery)
-
+admin.site.register(Favourite)
 
 
 

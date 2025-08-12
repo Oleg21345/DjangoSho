@@ -1,5 +1,4 @@
 import datetime
-
 from django.views.generic import ListView, DetailView
 from shop.models import Category, Product, Reviews, Favourite
 from django.db.models import Q, F
@@ -7,7 +6,6 @@ from shop.forms import ReviewForm
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.db.models import Avg
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class Home(ListView):
@@ -104,22 +102,6 @@ class ProductDetail(DetailView):
     def get_queryset(self):
         return Product.objects.all()
 
-class FavouriteDetail(LoginRequiredMixin ,ListView):
-    model = Favourite
-    context_object_name = "favourite"
-    extra_context = {"title": "Сторінка обраного"}
-    template_name = "shop/favourite.html"
-    login_url = "login_register"
-
-    def get_queryset(self):
-        return Favourite.objects.filter(user=self.request.user).select_related('product')
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        favourites = self.get_queryset()
-        context['products'] = [fav.product for fav in favourites]
-        return context
-
 
 def add_review(request, product_slug):
     """Додавання коментаря"""
@@ -141,20 +123,7 @@ def add_review(request, product_slug):
     return redirect("product_detail", slug=product_slug)
 
 
-def favourite_product(request, product_slug):
-    if request.user.is_authenticated:
-        user = request.user
-        product = Product.objects.get(slug=product_slug)
-        favourite_products = Favourite.objects.filter(user=user)
-        if product in [i.product for i in favourite_products]:
-            fav_product = Favourite.objects.get(user=user, product=product)
-            fav_product.delete()
-        else:
-            Favourite.objects.create(user=user, product=product)
-        next_page = request.META.get("HTTP_REFERER", "category_detail")
-        return redirect(next_page)
-    else:
-        return redirect("login_register")
+
 
 
 
