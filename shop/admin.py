@@ -11,7 +11,7 @@ class GaleryInline(admin.TabularInline):
 
 
 @admin.register(Category)
-class CategoryAdmin(TranslationAdmin):
+class CategoryAdmin(admin.ModelAdmin):
     list_display = ("title", "parent", "get_product_count")
     prepopulated_fields = {"slug": ("title",)}
 
@@ -24,7 +24,7 @@ class CategoryAdmin(TranslationAdmin):
 
 
 @admin.register(Product)
-class ProductAdmin(TranslationAdmin):
+class ProductAdmin(admin.ModelAdmin):
     list_display = ('title','price','category','quantity','slug','size','color', "create_at", "get_photo")
     list_editable = ("price","size","color", "quantity",)
     list_filter = ("title","price",)

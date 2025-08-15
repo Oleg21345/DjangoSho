@@ -183,7 +183,7 @@ class ShippingAddress(models.Model):
     city = models.CharField(max_length=355, verbose_name="Місто")
     state = models.CharField(max_length=355, verbose_name="Район")
     street = models.CharField(max_length=355, verbose_name="Вулиця")
-    create_at = models.DateTimeField(auto_created=True, verbose_name="Час створення")
+    create_at = models.DateTimeField(auto_now_add=True, verbose_name="Час створення")
 
     def __str__(self):
         return self.street
