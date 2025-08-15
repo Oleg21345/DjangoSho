@@ -134,7 +134,7 @@ class Order(models.Model):
     """Корзина"""
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, blank=True, null=True,
                                  verbose_name="Покупець")
-    create_at = models.DateTimeField(auto_created=True, verbose_name="Час створення")
+    create_at = models.DateTimeField(auto_now_add=True, verbose_name="Час створення")
     is_completed = models.BooleanField(default=False, verbose_name="Закінчене замовлення")
     shiping = models.BooleanField(default=True, verbose_name="Доставка")
 
@@ -164,7 +164,7 @@ class OrderProduct(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True, verbose_name="Продукт")
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True, related_name="ordered")
     quantity = models.IntegerField(default=0, null=True, blank=True) # Кількість товару
-    added_at = models.DateTimeField(auto_created=True)
+    added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = "Замовлення в корзині"
@@ -180,9 +180,9 @@ class OrderProduct(models.Model):
 class ShippingAddress(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
     order = models.ForeignKey(Order, on_delete=models.SET_NULL, null=True)
-    city = models.CharField(max_length=355)
-    state = models.CharField(max_length=355)
-    street = models.CharField(max_length=355)
+    city = models.CharField(max_length=355, verbose_name="Місто")
+    state = models.CharField(max_length=355, verbose_name="Район")
+    street = models.CharField(max_length=355, verbose_name="Вулиця")
     create_at = models.DateTimeField(auto_created=True, verbose_name="Час створення")
 
     def __str__(self):

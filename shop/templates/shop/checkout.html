@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load sort_products %}
+
+{% block title %}Cart{% endblock %}
+
+{% block main %}
+<section style="max-width: 1200px; margin: 0 auto; padding: 40px 20px; font-family: Arial, sans-serif;">
+    <h1 style="font-size: 24px; font-weight: bold; margin-bottom: 30px;">Оформлення замовлення</h1>
+
+    <div style="display: flex; gap: 40px;">
+        <div style="flex: 2;">
+            <h2 style="font-size: 16px; font-weight: bold; margin-bottom: 20px;">Деталі замовлення</h2>
+            <form action="{% url 'payment' %}" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if customerform.non_field_errors %}
+                <div class="alert alert-danger">{{ customerform.non_field_errors }}</div>
+                {% endif %}
+                {% if shippingform.non_field_errors %}
+                <div class="alert alert-danger">{{ shippingform.non_field_errors }}</div>
+                {% endif %}
+
+                <div style="display: flex; gap: 20px; margin-bottom: 15px;">
+                    <div style="flex: 1;">
+                        {{ customerform.first_name.label_tag }}
+                        {{ customerform.first_name }}
+                        {% if customerform.first_name.errors %}
+                        <div class="text-danger">{{ customerform.first_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div style="flex: 1;">
+                        {{ customerform.last_name.label_tag }}
+                        {{ customerform.last_name }}
+                        {% if customerform.last_name.errors %}
+                        <div class="text-danger">{{ customerform.last_name.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 20px; margin-bottom: 15px;">
+                    <div style="flex: 1;">
+                        {{ customerform.gmail.label_tag }}
+                        {{ customerform.gmail }}
+                        {% if customerform.gmail.errors %}
+                        <div class="text-danger">{{ customerform.gmail.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div style="flex: 1;">
+                        {{ customerform.phone_number.label_tag }}
+                        {{ customerform.phone_number }}
+                        {% if customerform.phone_number.errors %}
+                        <div class="text-danger">{{ customerform.phone_number.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <h3 style="font-weight: bold; margin-bottom: 15px;">Адреса доставки</h3>
+
+                <div style="display: flex; gap: 20px; margin-bottom: 15px;">
+                    <div style="flex: 1;">
+                        {{ shippingform.city.label_tag }}
+                        {{ shippingform.city }}
+                        {% if shippingform.city.errors %}
+                        <div class="text-danger">{{ shippingform.city.errors }}</div>
+                        {% endif %}
+                    </div>
+                    <div style="flex: 1;">
+                        {{ shippingform.state.label_tag }}
+                        {{ shippingform.state }}
+                        {% if shippingform.state.errors %}
+                        <div class="text-danger">{{ shippingform.state.errors }}</div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    {{ shippingform.street.label_tag }}
+                    {{ shippingform.street }}
+                    {% if shippingform.street.errors %}
+                    <div class="text-danger">{{ shippingform.street.errors }}</div>
+                    {% endif %}
+                </div>
+
+                <button type="submit"
+                        style="background-color: black; color: white; padding: 10px 20px; border: none; cursor: pointer;">
+                    Оплатити
+                </button>
+            </form>
+        </div>
+
+        <div style="flex: 1; border: 1px solid #ddd; padding: 20px; background: #fafafa;">
+            <h2 style="font-size: 16px; font-weight: bold; margin-bottom: 15px;">YOUR ORDER</h2>
+            {% for item in order_products %}
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span>{{ item.product.title }}</span>
+                <span>{{ item.product.price }}</span>
+            </div>
+            {% endfor %}
+            <hr style="margin: 15px 0;">
+            <div style="display: flex; justify-content: space-between; font-weight: bold;">
+                <span>TOTAL</span>
+                <span>{{ order.get_cart_total_price }}</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -4,8 +4,9 @@ from shop.models import Category, Product, Reviews, Favourite
 from django.db.models import Q, F
 from shop.forms import ReviewForm
 from django.contrib import messages
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.db.models import Avg
+from django.core import paginator
 
 
 class Home(ListView):
@@ -15,11 +16,15 @@ class Home(ListView):
     extra_context = {"title": "Головна сторінка"}
     template_name = "shop/index.html"
 
+    def render_to_response(self, context, **response_kwargs):
+        if self.request.headers.get("X-Requested-With") == "XMLHttpRequest":
+            return render(self.request, "shop/components/_products.html", context)
+        return super().render_to_response(context, **response_kwargs)
+
     def get_context_data(self, **kwargs):
         """Додаткові параметри у шаблон"""
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.filter(parent=None)
-        context = super().get_context_data(**kwargs)
         if self.request.user.is_authenticated:
             context['favourites_count'] = Favourite.objects.filter(user=self.request.user).count()
         else:
@@ -29,6 +34,7 @@ class Home(ListView):
 
 class SubCategory(ListView):
     """Показується які пости є в категорії та її підкатегорії"""
+    paginate_by = 4
 
     model = Product
     context_object_name = "products"
@@ -40,7 +46,7 @@ class SubCategory(ListView):
 
         products = Product.objects.filter(
             Q(category=parent_category) | Q(category__in=subcategories)
-        ).order_by("?")
+        ).order_by("create_at")
 
         return products
 

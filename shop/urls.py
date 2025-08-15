@@ -3,6 +3,7 @@ from shop.views.views import *
 from shop.views.register_and_login import *
 from shop.views.favourite_views import *
 from shop.views.send_email_views import *
+from shop.views.shopping_cart_views import *
 
 urlpatterns = [
     path("", Home.as_view(), name="home"),
@@ -19,6 +20,11 @@ urlpatterns = [
     path("add_review/<slug:product_slug>/", add_review, name="add_review"),
     path("add_favourite/<slug:product_slug>/", favourite_product, name="add_fav"),
     path("send_email/", send_email_to_subs, name="send_email"),
+    path("cart/", cart, name="cart"),
+    path("to_cart/<int:product_id>/<str:action>/", to_cart, name="to_cart"),
+    path("checkout/", checkout, name="checkout"),
+    path("payment/", create_checkout_session, name="payment"),
+    path("success/", success_payment, name="success"),
 ]
 
 

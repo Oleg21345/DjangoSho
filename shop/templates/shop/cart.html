@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load sort_products %}
+
+{% block title %}Cart{% endblock %}
+
+{% block main %}
+
+<main class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold">Товари</h1>
+        <div>
+            <a href="{% url 'home' %}" class="btn btn-outline-secondary me-2">Головна</a>
+            <a href="{% url 'cart' %}" class="btn btn-outline-secondary">Корзина</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <table class="table align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>Продукт</th>
+                    <th>Ціна</th>
+                    <th>Кількість</th>
+                    <th>Сума</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in order_products %}
+                {% include "shop/components/_cart_row.html" %}
+                {% endfor %}
+                </tbody>
+            </table>
+            <div class="d-flex justify-content-between mt-4">
+                <a href="{% url 'home' %}" class="btn btn-outline-secondary">
+                    ← Повернутися до покупок
+                </a>
+                {% if order_products %}
+                <a href="{% url 'checkout' %}" class="btn btn-primary">
+                    Оформити замовлення →
+                </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="border p-4 bg-light">
+                <h5 class="fw-bold mb-3">Сума товарів</h5>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Кількість товарів</span>
+                    <span>{{ order.get_cart_total_quantity }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-3">
+                    <span>Повна вартість</span>
+                    <span>{{ order.get_cart_total_price }}</span>
+                </div>
+                <input type="text" class="form-control mb-3" placeholder="Введіть свій купон">
+                <button class="btn btn-dark w-100">Використати купон</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% endblock %}

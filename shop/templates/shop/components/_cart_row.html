@@ -1,0 +1,51 @@
+<tr>
+    <td>
+        <div class="d-flex align-items-center">
+            <a href="{{ item.product.get_absolute_url }}">
+                <img src="{{ item.product.get_first_photo }}"
+                     alt="{{ item.product.title }}"
+                     class="me-3 img-thumbnail"
+                     style="max-width: 80px; height: auto;">
+            </a>
+
+            <a href="{% url 'product_detail' item.product.slug %}" class="text-dark text-decoration-none fw-medium">
+                {{ item.product.title }}
+            </a>
+        </div>
+    </td>
+    <td>{{ item.product.price }}</td>
+    <td>
+
+        <div class="row">
+            <div class="d-flex align-items-center gap-2">
+                {% if 'cart' in request.path %}
+                {% if item.quantity > 0 %}
+                <a href="{% url 'to_cart' item.product.id 'delete' %}"
+                   class="text-secondary fs-5"
+                   style="text-decoration: none;">
+                    <i class="fas fa-caret-left"></i>
+                </a>
+                {% endif %}
+
+                <span class="fw-semibold">{{ item.quantity }}</span>
+
+                <a href="{% url 'to_cart' item.product.id 'add' %}"
+                   class="text-secondary fs-5"
+                   style="text-decoration: none;">
+                    <i class="fas fa-caret-right"></i>
+                </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </td>
+    <td>{{ item.get_total_price }}</td>
+    <td>
+        <a href="{% url 'to_cart' item.product.id 'remove' %}"
+           class="text-muted fs-5"
+           style="text-decoration: none;"
+           title="Видалити">
+            <i class="fas fa-trash"></i>
+        </a>
+</tr>
+

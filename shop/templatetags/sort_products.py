@@ -13,7 +13,7 @@ def get_sorted_products(context):
     queryset = Product.objects.all()
 
     if sort == "product_rating":
-        queryset = queryset.annotate(avg_rating=Avg('reviews__rating')).order_by('-avg_rating')
+        queryset = queryset.annotate(avg_rating=Avg('reviews__rating')).order_by('avg_rating')
     else:
         options = {
             "all": None,

@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load sort_products %}
+{% load static %}
+
+{% block title %}Cart{% endblock %}
+
+{% block main %}
+<div><div style="margin-top: 100px;"></div></div>
+
+<section class="success-page">
+  <div class="message-box">
+    <i class="fa fa-check-circle icon-success"></i>
+    <h2>Платіж пройшов успішно!</h2>
+    <p>Дякуємо за покупку. Номер замовлення: <strong>#{{ order_number }}</strong></p>
+    <p>Ви отримаєте лист з підтвердженням найближчим часом.</p>
+    <div class="actions">
+      <a href="/" class="btn btn-primary">Повернутися на головну</a>
+      <a href="/orders/" class="btn btn-secondary">Перейти до замовлень</a>
+    </div>
+  </div>
+</section>
+<div><div style="margin-top: 350px;"></div></div>
+
+{% endblock %}

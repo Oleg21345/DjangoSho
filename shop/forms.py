@@ -1,15 +1,16 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, User
 from shop.models import Reviews, Customer, ShippingAddress
+from django.utils.translation import gettext as _
 
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(
-        label="Ім'я користувача",
+        label=_("Ім'я користувача"),
         max_length=80,
         widget=forms.TextInput(attrs={
             "class": "form-control",
-            "placeholder": "Ім'я користувача"
+            "placeholder": _("Ім'я користувача")
         })
     )
 
@@ -17,7 +18,7 @@ class LoginForm(AuthenticationForm):
         label="Пароль",
         widget=forms.PasswordInput(attrs={
             "class": "form-control",
-            "placeholder": "Пароль"
+            "placeholder": _("Пароль")
         })
     )
 
@@ -33,35 +34,35 @@ class RegisterForm(UserCreationForm):
         )
 
     username = forms.CharField(
-        label="Ім'я користувача",
+        label=_("Ім'я користувача"),
         max_length=80,
         widget=forms.TextInput(attrs={
             "class": "form-control",
-            "placeholder": "Ім'я користувача"
+            "placeholder": _("Ім'я користувача")
         })
     )
 
     email = forms.EmailField(
-        label="Пошта",
+        label=_("Пошта"),
         widget=forms.TextInput(attrs={
             "class": "form-control",
-            "placeholder": "Електрона пошта"
+            "placeholder": _("Електрона пошта")
         })
     )
 
     password1 = forms.CharField(
-        label="Пароль",
+        label=_("Пароль"),
         widget=forms.PasswordInput(attrs={
             "class": "form-control",
-            "placeholder": "Пароль"
+            "placeholder": _("Пароль")
         })
     )
 
     password2 = forms.CharField(
-        label="Повторний пароль",
+        label=_("Повторний пароль"),
         widget=forms.PasswordInput(attrs={
             "class": "form-control",
-            "placeholder": "Повторити пароль"
+            "placeholder": _("Повторити пароль")
         })
     )
 

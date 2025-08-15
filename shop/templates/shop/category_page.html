@@ -13,7 +13,7 @@ Shop
             <div class="mb-4">
                 <h6 class="fw-bold bg-dark text-white p-2">FASHION & ACC</h6>
                 <ul class="list-unstyled ps-2">
-                {% include "shop/components/_recomended_categories.html" %}
+                    {% include "shop/components/_recomended_categories.html" %}
                 </ul>
             </div>
 
@@ -45,14 +45,15 @@ Shop
                 <p class="text-center">No products available.</p>
                 {% endfor %}
             </div>
+            <p class="text-center mt-3">
+    <span class="badge bg-primary fs-6">
+        Показано {{ products.count }} з {{ paginator.count }} товарів
+    </span>
+            </p>
+            <!-- Пагінатор-->
+            {% include "shop/components/_paginator.html" %}
 
-            <nav aria-label="Page navigation" class="mt-4">
-                <ul class="pagination justify-content-center">
-                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                </ul>
-            </nav>
+
         </div>
     </div>
 </div>
