@@ -1,4 +1,4 @@
-from shop.models import Product, Order, OrderProduct, Customer
+from shop.models import Product, Order, OrderProduct, Customer, CouponForUser, BuyProduct
 
 
 class CartForAuthUser:
@@ -14,6 +14,7 @@ class CartForAuthUser:
         """Отримання інформації про корзину"""
         customer, created = Customer.objects.get_or_create(user=self.user)
         order, created = Order.objects.get_or_create(customer=customer)
+        coupon_user, created = CouponForUser.objects.get_or_create(user=self.user)
         order_products = order.ordered.all()
         cart_total_quantity = order.get_cart_total_quantity
         cart_total_price = order.get_cart_total_price
@@ -22,7 +23,8 @@ class CartForAuthUser:
             "order": order, # ID корзинки
             "order_products": order_products,  # QuerySet товарів в корзинці
             "quantity": cart_total_quantity, # Всю кількість товарів в корзинці
-            "price": cart_total_price  # Суму товарів корзинки
+            "price": cart_total_price,  # Суму товарів корзинки
+            "coupon_user": coupon_user
         }
 
 
@@ -51,7 +53,7 @@ class CartForAuthUser:
         order = self.get_cart_info()["order"]
         order_products = order.ordered.all()
         for product in order_products:
-            product.delete()
+            BuyProduct.objects.create(product=product)
         order.save()
 
 
@@ -65,6 +67,7 @@ def get_cart_data(request):
         "order_products": cart_info.get("order_products"),
         "cart_total_quantity": cart_info.get("quantity"),
         "cart_total_price": cart_info.get("price"),
+        "coupon_user": cart_info.get("coupon_user")
     }
 
 

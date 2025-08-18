@@ -1,47 +1,80 @@
-<header>
 {% load i18n %}
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container">
-        <a class="navbar-brand fw-bold" href="/">{% translate 'Hello' %} {{ user.username }}</a>
+{% load sort_products %}
 
-        <div class="dropdown">
-            {% get_current_language as LANGUAGE_CODE %}
-            {% get_available_languages as LANGUAGES %}
-            {% get_language_info_list for LANGUAGES as languages %}
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="/">{% translate 'Привіт' %} {{ user.username }}</a>
 
-            <a class="btn btn-outline-light dropdown-toggle" href="#" role="button" id="langDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                {{ LANGUAGE_CODE|upper }}
-            </a>
-            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="langDropdown">
-                {% for lang in languages %}
+            <div class="dropdown">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                {% get_language_info_list for LANGUAGES as languages %}
+
+                <a class="btn btn-outline-light dropdown-toggle" href="#" role="button" id="langDropdown"
+                   data-bs-toggle="dropdown" aria-expanded="false">
+                    {{ LANGUAGE_CODE|upper }}
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="langDropdown">
+                    {% for lang in languages %}
                     <li>
                         <a class="dropdown-item {% if lang.code == LANGUAGE_CODE %}active fw-bold{% endif %}"
                            href="/{{ lang.code }}/">
                             {{ lang.name_local }}
                         </a>
                     </li>
-                {% endfor %}
-            </ul>
+                    {% endfor %}
+                </ul>
+            </div>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">{% translate 'Головна' %}</a>
+                    </li>
+
+                    {% favourite_category as favourites_count %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'favourite' %}">
+                            {% translate 'Обране' %} {{ favourites_count }}
+                        </a>
+                    </li>
+
+                    {% order_product as order_product_count %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'cart' %}">{% translate 'Кошик' %} {{ order_product_count }}</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'history' %}">{% translate 'Історія покупок' %}</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'add_product' %}">{% translate 'Додати продукт' %}</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'add_category' %}">{% translate 'Додати категорію' %}</a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link text-danger" href="{% url 'logout' %}">{% translate 'Вийти' %}</a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{% url 'login_register' %}">
+                            {% translate 'Увійти / Зареєструватися' %}
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
         </div>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                {% if user.is_authenticated %}
-                    <li class="nav-item"><a class="nav-link active" href="/">{% translate 'Головна' %}</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'favourite' %}">{% translate 'Обране' %} {{ favourites_count }}</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'cart' %}">{% translate 'Кошик' %}</a></li>
-                    <li class="nav-item"><a class="nav-link text-danger" href="{% url 'logout' %}">{% translate 'Вийти' %}</a></li>
-                {% else %}
-                    <li class="nav-item"><a class="nav-link active" href="{% url 'login_register' %}">{% translate 'Увійти / Зареєструватися' %}</a></li>
-                {% endif %}
-            </ul>
-        </div>
-    </div>
-</nav>
-
+    </nav>
 </header>

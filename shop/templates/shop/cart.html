@@ -55,8 +55,12 @@
                     <span>Повна вартість</span>
                     <span>{{ order.get_cart_total_price }}</span>
                 </div>
-                <input type="text" class="form-control mb-3" placeholder="Введіть свій купон">
-                <button class="btn btn-dark w-100">Використати купон</button>
+                <form method="post" action="{% url 'coupon_using' %}">
+                    {% csrf_token %}
+                    <input type="text" name="coupon" class="form-control mb-3" placeholder="Введіть свій купон">
+                    <button type="submit" class="btn btn-dark w-100">Використати купон</button>
+                </form>
+
             </div>
         </div>
     </div>

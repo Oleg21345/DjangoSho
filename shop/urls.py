@@ -10,9 +10,12 @@ urlpatterns = [
     path("category/<slug:slug>/", SubCategory.as_view(), name="category_detail"),
     path("product/<slug:slug>/", ProductDetail.as_view(), name="product_detail"),
     path("favourite/", FavouriteDetail.as_view(), name="favourite"),
-    path("add_gmail/", add_subs_gmail, name="add_gmail"),
+    path("add_product/", AddProduct.as_view(), name="add_product"),
+    path("history_buys", HistoryBuy.as_view(), name="history"),
+    path("add_category/", AddCategory.as_view(), name="add_category"),
 
     # Функція
+    path("add_gmail/", add_subs_gmail, name="add_gmail"),
     path("login_register/", login_registration, name="login_register"),
     path("login_user/", user_login, name="login"),
     path("logout_user/", user_logout, name="logout"),
@@ -25,7 +28,12 @@ urlpatterns = [
     path("checkout/", checkout, name="checkout"),
     path("payment/", create_checkout_session, name="payment"),
     path("success/", success_payment, name="success"),
+    path("coupon_using", coupon_using, name="coupon_using"),
+    path("delete_product/<slug:slug>/", DeleteProduct.as_view(), name="delete_product"),
+    path("update_product/<slug:slug>/", UpdateProduct.as_view(), name="update_product"),
 ]
+
+
 
 
 

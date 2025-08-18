@@ -1,7 +1,8 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, User
-from shop.models import Reviews, Customer, ShippingAddress
+from shop.models import Reviews, Customer, ShippingAddress, Product, Category, Galery
 from django.utils.translation import gettext as _
+from django.forms import inlineformset_factory
 
 
 class LoginForm(AuthenticationForm):
@@ -102,8 +103,6 @@ class CustomerForm(forms.ModelForm):
         }
 
 
-
-
 class ShippingForm(forms.ModelForm):
 
     class Meta:
@@ -122,7 +121,62 @@ class ShippingForm(forms.ModelForm):
         }
 
 
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['title', 'img', 'parent', 'slug']
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Назва категорії'}),
+            'img': forms.ClearableFileInput(attrs={'class': 'form-control'}),
+            'parent': forms.Select(attrs={'class': 'form-select'}),
+            'slug': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Slug (не редагується)',
+                'readonly': True}),
+        }
 
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = [
+            "title",
+            "price",
+            "quantity",
+            "desc",
+            "info",
+            "category",
+            "size",
+            "color",
+        ]
+        widgets = {
+            "title": forms.TextInput(attrs={"class": "form-control", "placeholder": "Назва продукту"}),
+            "price": forms.NumberInput(attrs={"class": "form-control", "step": "0.01"}),
+            "quantity": forms.NumberInput(attrs={"class": "form-control"}),
+            "desc": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "info": forms.Textarea(attrs={"class": "form-control", "rows": 3}),
+            "category": forms.Select(attrs={"class": "form-select"}),
+            "size": forms.NumberInput(attrs={"class": "form-control"}),
+            "color": forms.TextInput(attrs={"class": "form-control"}),
+        }
+
+class MultiFileInput(forms.ClearableFileInput):
+    allow_multiple_selected = True
+
+class GaleryForm(forms.ModelForm):
+    class Meta:
+        model = Galery
+        fields = ["img"]
+        widgets = {
+            "img": MultiFileInput(attrs={"class": "form-control", "multiple": True}),
+        }
+
+GaleryFormSet = inlineformset_factory(
+    Product, Galery,
+    fields=('img',),
+    extra=3,
+    can_delete=True
+)
 
 
 

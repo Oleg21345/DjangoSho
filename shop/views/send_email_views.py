@@ -1,6 +1,7 @@
 from shop.models import  Gmail
 from django.contrib import messages
 from django.shortcuts import redirect, render
+from shop.tasks import send_msg_to_email, send_email_to_subs_task
 
 
 def add_subs_gmail(request):
@@ -10,6 +11,7 @@ def add_subs_gmail(request):
     if gmail:
         try:
             Gmail.objects.create(gmail=gmail, user=user)
+            send_msg_to_email.delay(gmail)
         except Exception as err:
             print(f"Error is {err}")
             messages.error(request, "Така пошта вже зареєстрована")
@@ -18,23 +20,9 @@ def add_subs_gmail(request):
 
 
 def send_email_to_subs(request):
-    """Відправка імейлу до користувача"""
-    from conf import settings
-    from django.core.mail import send_mail
     if request.method == "POST":
         text = request.POST.get("text")
-        mail_lists = Gmail.objects.all()
-        for mail in mail_lists:
-            send_mail(
-                subject="У нас нова пропозиція",
-                message=text,
-                from_email=settings.EMAIL_HOST_USER,
-                recipient_list=[mail.gmail],
-                fail_silently=False,
-            )
-            print(f"Повідомлення відправлене на пошту {mail} ----- {bool(send_mail)}")
+        send_email_to_subs_task.delay(text, schedule=0)
 
-    context = {
-        "title": "Спам ліст"
-    }
+    context = {"title": "Спам ліст"}
     return render(request, "shop/send_gmail.html", context)

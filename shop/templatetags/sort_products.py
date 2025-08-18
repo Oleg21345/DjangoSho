@@ -1,5 +1,5 @@
 from django import template
-from shop.models import Product, Favourite
+from shop.models import Product, Favourite, Order, OrderProduct
 from django.db.models import Avg
 
 register = template.Library()
@@ -41,3 +41,36 @@ def get_favourite_product(user):
     fav_product = Favourite.objects.filter(user=user)
     products = [i.product for i in fav_product]
     return products
+
+@register.filter
+def page_range_sliding(current, total):
+    current = int(current)
+    total = int(total)
+
+    pages = [1]
+
+    start = max(current - 1, 2)
+    end = min(current + 1, total - 1)
+
+    pages.extend(range(start, end + 1))
+
+    if total > 1:
+        pages.append(total)
+
+    return pages
+
+
+@register.simple_tag(takes_context=True)
+def favourite_category(context):
+    request = context['request']
+    if request.user.is_authenticated:
+        return Favourite.objects.filter(user=request.user).count()
+    return 0
+
+
+@register.simple_tag(takes_context=True)
+def order_product(context):
+    request = context['request']
+    if request.user.is_authenticated:
+        return OrderProduct.objects.filter(order__customer__user=request.user).count()
+    return 0

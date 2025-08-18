@@ -1,11 +1,27 @@
 import stripe
+from django.db.models.sql.query import rename_prefix_from_q
 from django.shortcuts import render, redirect
+from django.views.generic import ListView
+
 from shop.forms import CustomerForm, ShippingForm
 from shop.utils import CartForAuthUser, get_cart_data
 from django.contrib import messages
 from conf import settings
-from shop.models import Customer
+from shop.models import Customer, CouponFromUser, CouponForUser, BuyProduct
 from django.urls import reverse
+
+
+class HistoryBuy(ListView):
+    model = BuyProduct
+    context_object_name = "prod"
+    extra_context = {"title": "Історія покупок"}
+    template_name = "shop/historyproduct.html"
+
+    def get_queryset(self):
+        if self.request.user.is_authenticated:
+            return BuyProduct.objects.filter(user=self.request.user)
+        return BuyProduct.objects.none()
+
 
 def cart(request):
     cart_info = get_cart_data(request)
@@ -13,7 +29,8 @@ def cart(request):
         "order": cart_info.get("order"),
         "order_products": cart_info.get("order_products"),
         "quantity": cart_info.get("quantity"),
-        "title": "Корзина"
+        "title": "Корзина",
+        "coupon_user": cart_info.get("coupon_user")
     }
 
     return render(request, "shop/cart.html", context)
@@ -26,6 +43,23 @@ def to_cart(request, product_id, action):
     else:
         messages.error(request, "Ви маєте бути в системі щоб додати цей продукт")
         return redirect("login_register")
+
+
+def coupon_using(request):
+    if request.method == "POST":
+        entered_coupon = request.POST.get("coupon")
+        cart_info = get_cart_data(request)
+        print(f"DEBUG {entered_coupon}")
+        print(f"DEBUG {CouponFromUser.objects.all()}")
+        if CouponFromUser.objects.filter(coupon=entered_coupon).exists():
+            order = cart_info['order']
+            order.discount = 0.1
+            order.save()
+            messages.success(request, "Купон застосовано!")
+        else:
+            messages.info(request, "Такого купону нема, вибач")
+
+    return redirect("cart")
 
 
 def checkout(request):
@@ -86,10 +120,6 @@ def success_payment(request):
     user_cart.clear()
     messages.success(request, "Оплата пройшла успішно, дякую що ви з нами!")
     return render(request, "shop/success.html")
-
-
-
-
 
 
 

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if object %}Оновити продукт{% else %}Додати продукт{% endif %}
+{% endblock %}
+
+{% block main %}
+<div class="container my-5">
+    <div class="card shadow-lg rounded-4 border-0">
+        <div class="card-body p-4">
+
+            <h2 class="mb-4 text-center">
+                {% if object %}
+                    ✏️ Оновити продукт
+                {% else %}
+                    🛒 Додати новий продукт
+                {% endif %}
+            </h2>
+
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <div class="mb-4">
+                    <h5 class="border-bottom pb-2">📌 Основна інформація</h5>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.title.label }}</label>
+                            {{ form.title }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{{ form.price.label }}</label>
+                            {{ form.price }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{{ form.quantity.label }}</label>
+                            {{ form.quantity }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h5 class="border-bottom pb-2">⚙️ Характеристики</h5>
+                    <div class="row g-3 mt-1">
+                        <div class="col-md-6">
+                            <label class="form-label">{{ form.category.label }}</label>
+                            {{ form.category }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{{ form.size.label }}</label>
+                            {{ form.size }}
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label">{{ form.color.label }}</label>
+                            {{ form.color }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h5 class="border-bottom pb-2">📝 Опис</h5>
+                    <div class="mb-3">
+                        <label class="form-label">{{ form.desc.label }}</label>
+                        {{ form.desc }}
+                    </div>
+                    <div>
+                        <label class="form-label">{{ form.info.label }}</label>
+                        {{ form.info }}
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h5 class="border-bottom pb-2">🖼 Галерея картинок</h5>
+                    {{ formset.management_form }}
+                    <div class="row g-3 mt-1">
+                        {% for f in formset %}
+                            <div class="col-md-4">
+                                <div class="card p-3 shadow-sm h-100">
+                                    <label class="form-label">Картинка</label>
+                                    {{ f.img }}
+                                    {% if f.instance.pk %}
+                                        <div class="mt-2 text-center">
+                                            <img src="{{ f.instance.img.url }}" class="img-fluid rounded border" alt="Product image">
+                                        </div>
+                                    {% endif %}
+                                    <div class="form-check mt-2">
+                                        {{ f.DELETE }} <label class="form-check-label">Видалити</label>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn btn-success w-100 py-2 fs-5 rounded-3 shadow-sm">
+                        {% if object %}
+                            💾 Оновити продукт
+                        {% else %}
+                            💾 Додати продукт
+                        {% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+

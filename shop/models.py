@@ -36,9 +36,10 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    author = models.ForeignKey(User, on_delete=CASCADE, null=False)
     title = models.CharField(max_length=255, verbose_name="ім'я категорії")
     price = models.FloatField()
-    create_at = models.DateTimeField(auto_created=True, verbose_name="Час створення")
+    create_at = models.DateTimeField(auto_now_add=True, verbose_name="Час створення")
     watched = models.IntegerField(default=0, verbose_name="Перегляди")
     quantity = models.IntegerField(default=0, verbose_name="Кількість товару на складі")
     desc = models.CharField(default="Тут скоро щось буде", verbose_name="Опис")
@@ -137,6 +138,7 @@ class Order(models.Model):
     create_at = models.DateTimeField(auto_now_add=True, verbose_name="Час створення")
     is_completed = models.BooleanField(default=False, verbose_name="Закінчене замовлення")
     shiping = models.BooleanField(default=True, verbose_name="Доставка")
+    discount = models.FloatField(default=0)
 
     def __str__(self):
         return str(self.pk)
@@ -147,10 +149,8 @@ class Order(models.Model):
 
     @property
     def get_cart_total_price(self):
-        """Тут йде рахунок суми товарів в корзині"""
-        order_products = self.ordered.all()
-        total_price = sum([product.get_total_price for product in order_products])
-        return total_price
+        total_price = sum([product.get_total_price for product in self.ordered.all()])
+        return total_price * (1 - self.discount)
 
     @property
     def get_cart_total_quantity(self):
@@ -193,5 +193,16 @@ class ShippingAddress(models.Model):
         verbose_name_plural = "Адреса"
 
 
+class CouponFromUser(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    coupon = models.CharField(max_length=250, null=True, )
 
 
+class CouponForUser(models.Model):
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    coupon_user = models.CharField(max_length=250, null=True)
+
+
+class BuyProduct(models.Model):
+    user = models.ForeignKey(User, on_delete=CASCADE, null=True)
+    product = models.ForeignKey(Product, on_delete=CASCADE, null=True)

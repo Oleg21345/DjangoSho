@@ -25,13 +25,13 @@ class CategoryAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('title','price','category','quantity','slug','size','color', "create_at", "get_photo")
+    list_display = ('title','price','category','quantity','slug','size','color', "get_photo")
     list_editable = ("price","size","color", "quantity",)
     list_filter = ("title","price",)
     list_display_links = ("title",)
     prepopulated_fields = {"slug": ("title",)}
 
-    fields = ('title','category','price','quantity', 'slug','size','color', "create_at")
+    fields = ('title','category','price','quantity', 'slug','size','color')
 
     inlines = (GaleryInline,)
 

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="container my-5">
+    <div class="card shadow-lg border-0 mx-auto" style="max-width: 600px;">
+        <div class="card-body text-center p-5">
+            {% if object.images.first %}
+                <div class="mb-4">
+                    <img src="{{ object.images.first.img.url }}"
+                         alt="{{ object.title }}"
+                         class="img-fluid rounded border"
+                         style="max-height: 250px; object-fit: contain;">
+                </div>
+            {% endif %}
+
+            <h2 class="mb-3 text-danger">🗑 Видалити "{{ object.title }}"?</h2>
+            <p class="mb-4 text-muted">
+                Ви впевнені, що хочете видалити цей продукт? <br>
+                Цю дію неможливо скасувати.
+            </p>
+
+            <form method="post" class="d-flex justify-content-center gap-3">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-lg px-4">
+                    🗑 Видалити
+                </button>
+                <a href="{% url 'product_detail' object.slug %}" class="btn btn-secondary btn-lg px-4">Скасувати</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

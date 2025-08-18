@@ -1,12 +1,13 @@
 import datetime
-from django.views.generic import ListView, DetailView
-from shop.models import Category, Product, Reviews, Favourite
+from django.views.generic import ListView, DetailView, CreateView, DeleteView, UpdateView
+from shop.models import Category, Product, Reviews
+from shop.forms import ProductForm
 from django.db.models import Q, F
-from shop.forms import ReviewForm
+from shop.forms import ReviewForm, GaleryFormSet, CategoryForm
 from django.contrib import messages
 from django.shortcuts import redirect, render
 from django.db.models import Avg
-from django.core import paginator
+from django.urls import reverse_lazy
 
 
 class Home(ListView):
@@ -25,16 +26,78 @@ class Home(ListView):
         """Додаткові параметри у шаблон"""
         context = super().get_context_data(**kwargs)
         context["categories"] = Category.objects.filter(parent=None)
-        if self.request.user.is_authenticated:
-            context['favourites_count'] = Favourite.objects.filter(user=self.request.user).count()
+
+        return context
+
+
+class AddProduct(CreateView):
+    model = Product
+    form_class = ProductForm
+    template_name = "shop/add_product.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.POST:
+            context['formset'] = GaleryFormSet(self.request.POST, self.request.FILES)
         else:
-            context['favourites_count'] = 0
+            context['formset'] = GaleryFormSet()
+        return context
+
+    def form_valid(self, form):
+        context = self.get_context_data()
+        formset = context['formset']
+
+        self.object = form.save(commit=False)
+        self.object.author = self.request.user
+        self.object.save()
+
+        if formset.is_valid():
+            formset.instance = self.object
+            formset.save()
+        else:
+            return self.form_invalid(form)
+
+        return redirect('home')
+
+
+class DeleteProduct(DeleteView):
+    model = Product
+    context_object_name = "product"
+    template_name = "shop/product_confirm_delete.html"
+    extra_context = {"title": "Видалення товару"}
+    success_url = reverse_lazy("home")
+
+
+class UpdateProduct(UpdateView):
+    """Оновлювати пости"""
+    model = Product
+    form_class = ProductForm
+    template_name = "shop/add_product.html"
+    extra_context = {"title": "Оновити інформацію про продукт"}
+
+    def get_success_url(self):
+        next_url = self.request.GET.get("next")
+        if next_url:
+            return next_url
+        return reverse_lazy("home")
+
+
+class AddCategory(CreateView):
+    model = Category
+    form_class = CategoryForm
+    template_name = "shop/add_category.html"
+    context_object_name = "category"
+    success_url = reverse_lazy("add_product")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = "Додати категорію"
         return context
 
 
 class SubCategory(ListView):
     """Показується які пости є в категорії та її підкатегорії"""
-    paginate_by = 4
+    paginate_by = 1
 
     model = Product
     context_object_name = "products"
