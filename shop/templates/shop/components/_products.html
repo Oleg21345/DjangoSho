@@ -1,26 +1,26 @@
 {% load sort_products %}
- <div class="row g-4 justify-content-center">
-        {% get_sorted_products as products %}
-        {% for product in products %}
-        <div class="col-sm-6 col-md-4 col-lg-3">
-            <div class="card h-100 shadow-sm">
-                {% if product.images.all %}
-                <a href="{{ product.get_absolute_url }}">
-                    <img src="{{ product.images.first.img.url }}"
-                         class="card-img-top"
-                         alt="{{ product.title }}"
-                         style="height: 180px; object-fit: contain; background-color: #f8f9fa;">
-                </a>
-                {% else %}
-                <img src="https://via.placeholder.com/300x200?text=No+Img"
+<div class="row g-4 justify-content-center">
+    {% get_sorted_products as products %}
+    {% for product in products %}
+    <div class="col-sm-6 col-md-4 col-lg-3">
+        <div class="card h-100 shadow-sm">
+            {% if product.images.all %}
+            <a href="{{ product.get_absolute_url }}">
+                <img src="{{ product.images.first.img.url }}"
                      class="card-img-top"
                      alt="{{ product.title }}"
                      style="height: 180px; object-fit: contain; background-color: #f8f9fa;">
-                {% endif %}
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">{{ product.title }}</h5>
-                    <p class="card-text text-muted">{{ product.desc|default:"Опис відсутній" }}</p>
-                    <div class="mt-auto">
+            </a>
+            {% else %}
+            <img src="https://via.placeholder.com/300x200?text=No+Img"
+                 class="card-img-top"
+                 alt="{{ product.title }}"
+                 style="height: 180px; object-fit: contain; background-color: #f8f9fa;">
+            {% endif %}
+            <div class="card-body d-flex flex-column">
+                <h5 class="card-title">{{ product.title|truncatechars:50 }}</h5>
+                <p class="card-text text-muted">{{ product.desc|default:"Опис відсутній"|slice:":100" }}</p>
+                <div class="mt-auto">
                         <span class="fw-bold fs-6">
                             {% if product.price %}
                                 ₴{{ product.price }}
@@ -28,18 +28,18 @@
                                 Ціну уточнюйте
                             {% endif %}
                         </span>
-                        <a href="#" class="btn btn-primary btn-sm float-end">Купити</a>
-                        {% if request.user.is_authenticated %}
-                            {% get_favourite_product request.user as fav_products %}
-                            {% if product in fav_products %}
-                                <a href="{% url 'add_fav' product.slug %}" class="btn btn-sm px-2">🖤</a>
-                            {% else %}
-                                <a href="{% url 'add_fav' product.slug %}" class="btn btn-sm px-2">❤</a>
-                            {% endif %}
-                        {% endif %}
-                    </div>
+                    <a href="#" class="btn btn-primary btn-sm float-end">Купити</a>
+                    {% if request.user.is_authenticated %}
+                    {% get_favourite_product request.user as fav_products %}
+                    {% if product in fav_products %}
+                    <a href="{% url 'add_fav' product.slug %}" class="btn btn-sm px-2">🖤</a>
+                    {% else %}
+                    <a href="{% url 'add_fav' product.slug %}" class="btn btn-sm px-2">❤</a>
+                    {% endif %}
+                    {% endif %}
                 </div>
             </div>
         </div>
-        {% endfor %}
     </div>
+    {% endfor %}
+</div>

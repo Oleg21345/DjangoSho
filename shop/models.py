@@ -85,7 +85,7 @@ class Reviews(models.Model):
     author = models.ForeignKey(User, on_delete=CASCADE, verbose_name="Автор")
     product = models.ForeignKey(Product, on_delete=CASCADE, verbose_name="Продукт",  related_name="reviews")
     rating = models.PositiveSmallIntegerField(default=0)
-    create_at = models.DateTimeField(auto_created=True, verbose_name="Час створення")
+    create_at = models.DateTimeField(auto_now_add=True, verbose_name="Час створення")
 
     def __str__(self):
         return self.author.username

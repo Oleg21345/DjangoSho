@@ -25,7 +25,7 @@ class Home(ListView):
     def get_context_data(self, **kwargs):
         """Додаткові параметри у шаблон"""
         context = super().get_context_data(**kwargs)
-        context["categories"] = Category.objects.filter(parent=None)
+        context["categories"] = Category.objects.filter(parent=None)[:4]
 
         return context
 
