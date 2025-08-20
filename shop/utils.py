@@ -52,8 +52,16 @@ class CartForAuthUser:
     def clear(self):
         order = self.get_cart_info()["order"]
         order_products = order.ordered.all()
-        for product in order_products:
-            BuyProduct.objects.create(product=product)
+
+        for order_product in order_products:
+            BuyProduct.objects.create(
+                product=order_product.product,
+                user=self.user,
+                quantity=order_product.quantity
+            )
+
+        order_products.delete()
+
         order.save()
 
 

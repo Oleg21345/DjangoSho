@@ -206,3 +206,6 @@ class CouponForUser(models.Model):
 class BuyProduct(models.Model):
     user = models.ForeignKey(User, on_delete=CASCADE, null=True)
     product = models.ForeignKey(Product, on_delete=CASCADE, null=True)
+    quantity = models.IntegerField(default=0, null=True, blank=True) # Кількість товару
+    create_at = models.DateTimeField(auto_now_add=True, verbose_name="Час створення")
+
